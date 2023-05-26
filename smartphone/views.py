@@ -113,3 +113,27 @@ def phone(request: HttpRequest, id=None) -> JsonResponse:
         return JsonResponse({'status': 'ok'})
 
     return JsonResponse({'status': 'method not allowed!'})
+
+
+
+def get_by_ram(request:HttpRequest,ram=None) ->JsonResponse:
+    if request.method == 'GET':
+        if id is not None:
+            phones = Phone.objects.filter(ram = ram)
+            if len(phones) == 0:
+                return JsonResponse({'status': 'Bunday ramga teng telefon yoq'})
+            else:
+                results = [to_dict(phone) for phone in phones]
+                return JsonResponse(results,safe=False)
+            
+def get_by_rams(request:HttpRequest) -> JsonResponse:
+    params = request.GET
+    min = int(params.get('min',0))
+    max = int(params.get('max',0))
+    if request.method == 'GET':
+        results = []
+        for ram in range(min,max+1):
+            phones = Phone.objects.filter(ram = ram)
+            for phone in phones:
+                results.append(to_dict(phone))
+        return JsonResponse(results,safe=False)
