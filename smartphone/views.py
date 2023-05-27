@@ -137,3 +137,15 @@ def get_by_rams(request:HttpRequest) -> JsonResponse:
             for phone in phones:
                 results.append(to_dict(phone))
         return JsonResponse(results,safe=False)
+    
+def get_by_price(request:HttpRequest) -> JsonResponse:
+    params = request.GET
+    min = int(params.get('min',0))
+    max = int(params.get('max',0))
+    result = []
+    if request.method == 'GET':
+        for smartphone in Phone.objects.all():
+            if smartphone.price > min and smartphone.price < max:
+                result.append(to_dict(smartphone))
+
+        return JsonResponse(result,safe=False)
